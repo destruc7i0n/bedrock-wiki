@@ -9,8 +9,8 @@ The Bedrock Wiki is a knowledge-sharing website for technical features of Minecr
 
 ## Fetching Pages as Markdown
 
-Every page is also served as plain Markdown, which is easier to process than the
-rendered HTML. There are two equivalent ways to get it:
+Every page is served as Markdown as well as HTML, which is easier to process.
+There are two equivalent ways to get it:
 
 1. Append `.md` to the page URL.
 2. Request the page URL with an `Accept: text/markdown` header.
@@ -23,10 +23,15 @@ rendered HTML. There are two equivalent ways to get it:
 - Page URL: https://wiki.bedrock.dev/guide/introduction
   Markdown: https://wiki.bedrock.dev/guide/introduction.md
 
-The Markdown version resolves everything the page renders, including table data,
-file trees and example pack files, so it is more complete than the repository
-source. If you need the source as authored instead, it is at
-https://github.com/Bedrock-OSS/bedrock-wiki under `docs/`.
+The Markdown is the page as written, so some of it comes from the wiki's own
+theme rather than standard Markdown:
+
+- `<CodeHeader path="BP/blocks/custom_slab.json" />` names the file that the code
+  sample below it belongs to.
+- `<Table data="..." />` is replaced by a link to the JSON holding that table's
+  rows.
+- `<FolderView :paths="[...]" />` lists the files of an example pack.
+- `:::tip`, `:::warning` and `:::danger` mark asides, ending at a matching `:::`.
 
 ## Discovery
 
