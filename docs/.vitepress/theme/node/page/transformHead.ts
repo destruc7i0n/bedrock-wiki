@@ -16,15 +16,17 @@ export function transformHead({ pageData, siteConfig }: TransformContext) {
   let url = config.themeConfig.url;
   if (path !== "index") url += `/${path}`;
 
-  const data: Record<string, string> = {
-    // Open Graph (used by Discord)
+  // Open Graph (used by Discord) is keyed by `property`, not `name`.
+  const properties: Record<string, string> = {
     "og:type": "website",
     "og:title": title,
     "og:description": description,
     "og:image": image,
     "og:url": url,
     "og:site_name": site,
-    // Twitter
+  };
+
+  const names: Record<string, string> = {
     "twitter:card": "summary",
     "twitter:title": title,
     "twitter:description": description,
@@ -32,19 +34,20 @@ export function transformHead({ pageData, siteConfig }: TransformContext) {
     "twitter:site": site,
   };
 
-  if (params?.file) data.robots = "noindex";
+  if (params?.file) names.robots = "noindex";
 
   const out: HeadConfig[] = [];
 
-  Object.entries(data).forEach(([name, content]) => {
-    out.push([
-      "meta",
-      {
-        name,
-        content,
-      },
-    ]);
+  Object.entries(properties).forEach(([property, content]) => {
+    out.push(["meta", { property, content }]);
   });
+
+  Object.entries(names).forEach(([name, content]) => {
+    out.push(["meta", { name, content }]);
+  });
+
+  // Example file pages are `noindex`, so they get no canonical URL of their own.
+  if (!params?.file) out.push(["link", { rel: "canonical", href: url }]);
 
   return out;
 }
