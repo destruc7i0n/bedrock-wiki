@@ -4,14 +4,8 @@ import { dirname, join } from "path";
 import { dump } from "js-yaml";
 import matter from "gray-matter";
 
-import {
-  examplesCacheDirectory,
-  getExampleFromRoot,
-  getExampleRootForPage,
-  renderExampleFile,
-} from "../examples";
+import { renderExampleFileForPage } from "../examples";
 import assetPath from "../../shared/assetPath";
-import filePageLink from "../../shared/filePageLink";
 import { ThemeConfig } from "../../types";
 import { getStaticPages } from "../pages";
 
@@ -88,17 +82,8 @@ function renderExample(relativePath: string, tag: string) {
   const path = tag.match(propPattern("path"))?.[1];
   if (!path) return tag;
 
-  const rootPath = getExampleRootForPage(relativePath);
-  const example = getExampleFromRoot(rootPath);
-
-  if (!example.files.includes(path)) {
-    throw new Error(`Example file "${path}" does not exist.`);
-  }
-
-  const buffer = readFileSync(join(examplesCacheDirectory, example.id, path));
-  const link = filePageLink(rootPath, path);
-
-  const markdown = renderExampleFile(path, buffer, link, tag.match(propPattern("snippet"))?.[1]);
+  const snippet = tag.match(propPattern("snippet"))?.[1];
+  const { markdown, link } = renderExampleFileForPage(relativePath, path, snippet);
 
   // Images are inlined as base64 for the browser, which is far too large here.
   return markdown.replace(/src="data:[^"]*"/, `src="${link}"`);

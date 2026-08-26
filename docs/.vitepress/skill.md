@@ -1,6 +1,6 @@
 ---
 name: bedrock-wiki
-description: Look up Minecraft Bedrock add-on documentation — blocks, entities, items, Molang, JSON UI, the Script API, commands and more — on the Bedrock Wiki, and fetch any page as plain Markdown.
+description: Look up Minecraft Bedrock add-on documentation on the Bedrock Wiki, covering blocks, entities, items, Molang, JSON UI, the Script API and commands, and fetch any page as Markdown.
 ---
 
 # Bedrock Wiki
@@ -16,22 +16,28 @@ section. Fetch it first to find the page you need.
 
 ## Reading a page
 
-Every page is served as plain Markdown as well as HTML. Either append `.md` to the
-page URL, or send `Accept: text/markdown`:
+Every page is served as Markdown as well as HTML. Either append `.md` to the page
+URL, or send `Accept: text/markdown`:
 
 ```
 https://wiki.bedrock.dev/blocks/blocks-intro.md
 ```
 
-Prefer the Markdown version. It resolves everything the rendered page shows,
-including table data, file trees and example pack files, so it is more complete
-than the source in the repository.
+The Markdown is the page as written, so a few things in it come from the wiki's
+own theme rather than from standard Markdown:
+
+-   `<CodeHeader path="BP/blocks/custom_slab.json" />` names the file that the
+    code sample below it belongs to. A `breadcrumbs` prop, when present, gives the
+    path within that file.
+-   `<Table data="…" />` is replaced by a link to the JSON holding that table's
+    rows. Fetch it if you need the data.
+-   `<FolderView :paths="[…]" />` lists the files of an example pack.
+-   `:::tip`, `:::warning` and `:::danger` mark asides, ending at a matching `:::`.
 
 ## Notes
 
-- Content is community-written and covers a wide range of Minecraft versions.
-  Pages state the `format_version` they apply to; check it against the version you
-  are targeting.
-- Code samples are labelled with the file they belong to, in bold immediately
-  above the sample, e.g. **`BP/blocks/custom_slab.json`**.
-- The wiki is documentation only. It has no API, no accounts and nothing to buy.
+Content is community-written and covers a wide range of Minecraft versions. Pages
+state the `format_version` they apply to, so check it against the version you are
+targeting.
+
+The wiki is documentation only. It has no API, no accounts and nothing to buy.

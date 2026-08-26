@@ -1,7 +1,11 @@
-import { extname } from "path";
+import { extname, join } from "path";
+import { readFileSync } from "fs";
 import { PNG } from "pngjs";
 import TGA from "tga";
 
+import { getExampleFromRoot, getExampleRootForPage } from "./map";
+import { examplesCacheDirectory } from "./data";
+import filePageLink from "../../shared/filePageLink";
 import { getCodeSnippet } from "./snippet";
 
 const fenceChar = "`";
@@ -10,6 +14,20 @@ const imageTypes = ["jpg", "jpeg", "png", "tga"];
 const unsupportedTypes = ["mcstructure"];
 
 const viewFileTooltip = "View File";
+
+export function renderExampleFileForPage(relativePath: string, path: string, snippet?: string) {
+  const rootPath = getExampleRootForPage(relativePath);
+  const example = getExampleFromRoot(rootPath);
+
+  if (!example.files.includes(path)) {
+    throw new Error(`Example file "${path}" does not exist.`);
+  }
+
+  const buffer = readFileSync(join(examplesCacheDirectory, example.id, path));
+  const link = filePageLink(rootPath, path);
+
+  return { markdown: renderExampleFile(path, buffer, link, snippet), link };
+}
 
 export function renderExampleFile(
   path: string,
