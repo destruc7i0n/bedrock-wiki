@@ -33,6 +33,21 @@ theme rather than standard Markdown:
 - `<FolderView :paths="[...]" />` lists the files of an example pack.
 - `:::tip`, `:::warning` and `:::danger` mark asides, ending at a matching `:::`.
 
+## Searching
+
+The wiki's search index is public. Querying it is usually quicker than working
+through the table of contents below:
+
+```
+curl -X POST "https://N9ZHAYJQII-dsn.algolia.net/1/indexes/wiki-bedrock/query" \
+  -H "X-Algolia-Application-Id: N9ZHAYJQII" \
+  -H "X-Algolia-API-Key: a664f5a5da631810a08e1a48554fe523" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "placement position trait"}'
+```
+
+Each hit has a `url` pointing at the page and the heading that matched.
+
 ## Discovery
 
 - https://wiki.bedrock.dev/.well-known/agent-skills/index.json

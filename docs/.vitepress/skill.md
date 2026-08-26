@@ -11,8 +11,21 @@ Script API, commands, loot tables, particles, world generation and more.
 
 ## Finding a page
 
-`https://wiki.bedrock.dev/llms.txt` lists every page on the wiki, grouped by
-section. Fetch it first to find the page you need.
+The wiki's search index is public, and is the quickest way to find the page you
+need:
+
+```
+curl -X POST "https://N9ZHAYJQII-dsn.algolia.net/1/indexes/wiki-bedrock/query" \
+  -H "X-Algolia-Application-Id: N9ZHAYJQII" \
+  -H "X-Algolia-API-Key: a664f5a5da631810a08e1a48554fe523" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "placement position trait"}'
+```
+
+Each hit has a `url` pointing at the page and the heading that matched.
+
+Failing that, `https://wiki.bedrock.dev/llms.txt` lists every page with a short
+description of what it covers, grouped by section.
 
 ## Reading a page
 

@@ -1,7 +1,8 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
-import { resolve } from "path";
+import { join, resolve } from "path";
+import matter from "gray-matter";
 
-import { Sidebar } from "../../../types";
+import { Sidebar, SidebarLink } from "../../../types";
 import config from "../config";
 
 const templatePath = resolve(config.srcDir, "llms.txt");
@@ -19,9 +20,7 @@ export default function generateLlmsFile(sidebar: Sidebar) {
     lines.push("## General");
     lines.push("");
 
-    for (const page of sidebar.links) {
-      lines.push(`- [${page.title}](${page.link})`);
-    }
+    for (const page of sidebar.links) lines.push(formatLink(page));
 
     lines.push("");
   }
@@ -32,9 +31,7 @@ export default function generateLlmsFile(sidebar: Sidebar) {
     lines.push("");
 
     // Pages without a category
-    for (const page of section.links) {
-      lines.push(`- [${page.title}](${page.link})`);
-    }
+    for (const page of section.links) lines.push(formatLink(page));
 
     lines.push("");
 
@@ -45,9 +42,7 @@ export default function generateLlmsFile(sidebar: Sidebar) {
       lines.push(`### ${category.title}`);
       lines.push("");
 
-      for (const page of category.links) {
-        lines.push(`- [${page.title}](${page.link})`);
-      }
+      for (const page of category.links) lines.push(formatLink(page));
 
       lines.push("");
     }
@@ -61,4 +56,16 @@ export default function generateLlmsFile(sidebar: Sidebar) {
     .trimEnd();
 
   writeFileSync(outputPath, content);
+}
+
+// Read from the page rather than the sidebar, which is sent to the browser and
+// does not need to carry a description for every page.
+function formatLink({ title, link }: SidebarLink) {
+  const path = join(config.srcDir, `${link.slice(1)}.md`);
+  if (!existsSync(path)) return `- [${title}](${link})`;
+
+  const { description } = matter(readFileSync(path, "utf-8")).data;
+  if (!description) return `- [${title}](${link})`;
+
+  return `- [${title}](${link}): ${description.replace(/\s+/g, " ").trim()}`;
 }
